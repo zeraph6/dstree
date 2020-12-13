@@ -26,9 +26,10 @@
 
 /**
  /// This function initializes a dstree root node using setting.
-  /// init node as a leaf node with @dstree_leaf_node_init()
- /// init segmentation (1) and define node_point(ri).
- /// init sketches(Z) for each segment and hs-segment(all possible new segment after v split)
+  \F1 init node as a leaf node with dstree_leaf_node_init()
+ \F2 with calc_split_point() :  init segmentation (1) and define node_point(ri) .
+ \F3 with node_init_segment() : init sketches(Z) for each segment and hs-segment(all possible new segment after v split)
+  \F4     with create_dstree_node_filename()  store the name the leaf with meta data about leaf, the split policy of father leaf, in the buffer node->filename
  */
 
 struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settings) 
@@ -137,9 +138,9 @@ struct dstree_node * dstree_leaf_node_init(void)
 /**
  Init segments by :
  copying split_points(ri) into node->node_points; /-/
- node->num_node_points = segment_size; /-/
- node->hs_node_points : ri and point between each two ri(one seg gives two equilength hs seg); to help in vertical split ; /-/
- node->node_segment_sketches : allocate and init  sketch with +/- INF, to each segment and hs segment
+ @node__num_node_points = segment_size; /-/
+ @node_hs_node_points : ri and point between each two ri(one seg gives two equilength hs seg); to help in vertical split ; /-/
+ @nodenode_segment_sketches : allocate and init  sketch with +/- INF, to each segment and hs segment
   **/
 enum response node_init_segments(struct dstree_node * node, short * split_points, int segment_size)
 {     
@@ -361,7 +362,7 @@ enum response create_dstree_node_filename(struct dstree_index_settings *settings
 {
     int i;
     
-    node->filename = malloc(sizeof(char) * (settings->max_filename_size));
+    node->filename = malloc(sizeof(char) * (settings->max_filename_size));//max filename size are max size for meta data of leafs
 
     int l = 0;
     l += sprintf(node->filename+l ,"%02d", node->num_node_points);
