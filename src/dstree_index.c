@@ -381,7 +381,7 @@ enum response dstree_init_stats(struct dstree_index * index)
     
     return SUCCESS;
 }
-void dstree_get_index_footprint(struct dstree_index * index);
+
 void dstree_get_index_stats(struct dstree_index * index)
 {
   index->stats->total_seq_input_count = index->stats->idx_building_seq_input_count

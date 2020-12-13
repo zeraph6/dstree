@@ -19,7 +19,37 @@
 #include "dstree_file_buffer.h"
 #include "pqueue.h"
 #include "dstree_query_engine.h"
+/** node_structure
+    struct node_segment_split_policy * node_segment_split_policies;
+    short * node_points;
+    short * hs_node_points;
+    struct segment_sketch * node_segment_sketches;
+    struct segment_sketch * hs_node_segment_sketches;
+    struct node_split_policy * split_policy;
 
+    struct dstree_node *left_child;
+    struct dstree_node *right_child;
+    struct dstree_node *parent;
+
+    struct dstree_file_buffer * file_buffer;
+
+    char * filename;
+
+    mean_stdev_range range;
+
+    int num_node_segment_split_policies;
+    short num_node_points;  //number of vertical split points
+    short num_hs_node_points;  //number of horizontal split points
+
+    int max_segment_length;
+    int max_value_length;
+
+    unsigned int node_size;
+    unsigned int level;
+
+    unsigned char is_leaf;
+    boolean is_left;
+ * **/
 struct dstree_node {
 
     struct node_segment_split_policy * node_segment_split_policies;
@@ -53,7 +83,7 @@ struct dstree_node {
     boolean is_left;
 };
 
-struct dstree_node * dstree_root_node_init();
+struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settings) ;
 struct dstree_node * dstree_leaf_node_init();
 enum response node_init_segments(struct dstree_node * node, short * split_points, int segment_size);
 

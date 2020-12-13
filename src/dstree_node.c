@@ -25,7 +25,10 @@
 #include "../include/dstree_query_engine.h"
 
 /**
- This function initializes a dstree root node.
+ /// This function initializes a dstree root node using setting.
+  /// init node as a leaf node with @dstree_leaf_node_init()
+ /// init segmentation (1) and define node_point(ri).
+ /// init sketches(Z) for each segment and hs-segment(all possible new segment after v split)
  */
 
 struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settings) 
@@ -50,20 +53,19 @@ struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settin
     //calc the split points by segmentSize
     short * split_points = NULL;
     split_points = malloc (sizeof(short) * segment_size);
-
     if(split_points == NULL) {
       fprintf(stderr,"Error in dstree_node.c: Could not \
                      allocate memory for root split points.\n");
       return FAILURE;	
     }
 
-    if(!calc_split_points(split_points, ts_length, segment_size)) 
+    if(!calc_split_points(split_points, ts_length, segment_size))
     {
       fprintf(stderr,"Error in dstree_node.c: Could not \
                      calculate the split points for the root.\n");
       return FAILURE;	
     }
-    
+
     if(!node_init_segments(node, split_points, segment_size))
     {
       fprintf(stderr,"Error in dstree_node.c: Could not \
@@ -84,8 +86,10 @@ struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settin
 
 /**
  This function initalizes a dstree leaf node.
+   node->max_segment_length = 2;
+    node->max_value_length = 10;
+    le reste childs, parent, filename, sp ... to 0 or NULL
  */
-
 struct dstree_node * dstree_leaf_node_init(void) 
 {
     COUNT_NEW_NODE
@@ -130,7 +134,13 @@ struct dstree_node * dstree_leaf_node_init(void)
 }
 
 
-
+/**
+ Init segments by :
+ copying split_points(ri) into node->node_points; /-/
+ node->num_node_points = segment_size; /-/
+ node->hs_node_points : ri and point between each two ri(one seg gives two equilength hs seg); to help in vertical split ; /-/
+ node->node_segment_sketches : allocate and init  sketch with +/- INF, to each segment and hs segment
+  **/
 enum response node_init_segments(struct dstree_node * node, short * split_points, int segment_size)
 {     
 
@@ -194,7 +204,7 @@ enum response node_init_segments(struct dstree_node * node, short * split_points
     node->node_segment_sketches[i].indicators[2]= -FLT_MAX;
     node->node_segment_sketches[i].indicators[3]= FLT_MAX;
     node->node_segment_sketches[i].num_indicators= 4;
-  }
+  }//sketches Z init with +/- INF
 
   //allocate memory for horizontal indicators
   for (int i = 0; i < node->num_hs_node_points; ++i)
@@ -211,7 +221,7 @@ enum response node_init_segments(struct dstree_node * node, short * split_points
     node->hs_node_segment_sketches[i].indicators[2]= -FLT_MAX;
     node->hs_node_segment_sketches[i].indicators[3]= FLT_MAX;    
     node->hs_node_segment_sketches[i].num_indicators= 4;
-  }  
+  }  // sketches Z init of each possible 2 new segments after v split
 
   return SUCCESS;
 

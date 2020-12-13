@@ -326,6 +326,7 @@ struct  dstree_index{
     struct dstree_file_buffer_manager * buffer_manager;
     struct stats_info * stats;
 };
+
 struct dstree_index * dstree_index_init(struct dstree_index_settings *settings);
 struct dstree_index * dstree_index_read(const char* root_directory); 
 enum response dstree_index_write(struct dstree_index *index);
@@ -348,7 +349,9 @@ void dstree_print_stats (struct dstree_index *index);
 enum response dstree_update_index_stats(struct dstree_index *index, struct dstree_node *node);
 enum response dstree_init_stats(struct dstree_index * index);
 void print_tlb_stats(struct dstree_index * index, unsigned int query_num, char * queries);
-
+void dstree_get_index_footprint(struct dstree_index * index);
+void dstree_get_index_stats(struct dstree_index * index);
+void dstree_print_index_stats(struct dstree_index * index, char * dataset);
   
 //struct dstree_ts_buffer * copy_ts_in_mem(struct dstree_index * index, struct dstree_node * node);
 

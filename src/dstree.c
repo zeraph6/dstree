@@ -266,7 +266,7 @@ int main (int argc, char **argv)
        index = dstree_index_init(index_settings);
 
 
-
+//---------------------->
 
        index->first_node = dstree_root_node_init(index->settings);
 

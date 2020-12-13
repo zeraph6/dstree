@@ -327,7 +327,11 @@ ts_type range_calc(struct segment_sketch sketch, int len)
   
 }
 
-
+/**
+ store the split points ri in short * points, -
+ based on equi-length interval of segment(ts_length/segment_size) -
+ id_segment == endpoint of interval in ts -
+  **/
 enum response calc_split_points (short * points, int ts_length, int segment_size )
 {
 
@@ -350,8 +354,10 @@ enum response calc_split_points (short * points, int ts_length, int segment_size
   The number of hs_split_points is double that of the vertical ones
 */
 
-
-enum response calc_hs_split_points(short * hs_split_points,int * num_hs_split_points, short * split_points, int segment_size, int min_length)
+/**
+ * split_points[i] = ri /-/ @hs_split_points stores ri and points between each ri to help for vertical split(segmentation fo a segment)
+ * **/
+enum response calc_hs_split_points(short * hs_split_points,int * num_hs_split_points, short * split_points, int segment_size, int min_length/*1*/)
 {
   int c = 0;
 
@@ -361,7 +367,7 @@ enum response calc_hs_split_points(short * hs_split_points,int * num_hs_split_po
       {
           length = (short) (split_points[i] - split_points[i - 1]);
       }
-      if (length >= min_length * 2)
+      if (length >= min_length * 2)//>= 1*2
       {
           int start = 0;
           if (i > 0)

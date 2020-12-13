@@ -14,7 +14,10 @@
 #include "../config.h"
 #include "../globals.h"
 #include "dstree_index.h"
-
+/**
+ @param   ts_type * indicators;
+ @param int num_indicators;
+ * */
 struct segment_sketch{
   ts_type * indicators;
   int num_indicators;
@@ -41,6 +44,8 @@ enum response split_node (struct dstree_index * index, struct dstree_node * node
 enum response node_segment_sketch_update_sketch(struct segment_sketch * node_sketch, ts_type * series, int fromIdx, int toIdx);
 
 enum response series_segment_sketch_do_sketch(struct segment_sketch * series_segment_sketch, ts_type * series, int fromIdx, int toIdx);
+enum response calc_split_points (short * points, int ts_length, int segment_size );
+enum response calc_hs_split_points(short * hs_split_points,int * num_hs_split_points, short * split_points, int segment_size, int min_length);
 
 enum response mean_node_segment_split_policy_split(struct node_segment_split_policy * policy, struct segment_sketch sketch, struct segment_sketch * ret);
 enum response stdev_node_segment_split_policy_split(struct node_segment_split_policy * policy, struct segment_sketch sketch, struct segment_sketch * ret);
