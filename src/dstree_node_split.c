@@ -99,7 +99,7 @@ enum response node_segment_sketch_update_sketch(struct segment_sketch * node_seg
    }
    series_segment_sketch.num_indicators = 2;  
    
-   if(!series_segment_sketch_do_sketch (&series_segment_sketch, series, fromIdx, toIdx))
+   if(!series_segment_sketch_do_sketch(&series_segment_sketch, series, fromIdx, toIdx))
    {
     fprintf(stderr,"Error in node_init_segments(): Could not calculate the series segment  \
                     sketch.\n");
@@ -138,7 +138,6 @@ enum response node_segment_sketch_update_sketch(struct segment_sketch * node_seg
 boolean node_split_policy_route_to_left (struct dstree_node * node, ts_type * series)
 {
 
-
   struct segment_sketch series_segment_sketch;
   series_segment_sketch.indicators = NULL;
   series_segment_sketch.indicators = malloc (sizeof(ts_type)*2);
@@ -151,7 +150,7 @@ boolean node_split_policy_route_to_left (struct dstree_node * node, ts_type * se
 
   struct node_split_policy policy = *node->split_policy;
    boolean route_to_left = false;
-  
+  // calc mean and std of segment used in H-split for ts
    if(!series_segment_sketch_do_sketch (&series_segment_sketch, series, policy.split_from, policy.split_to))
      {
         fprintf(stderr,"Error in dstree_node_split.c: Could not calculate the series  \

@@ -83,6 +83,10 @@ struct dstree_node {
     boolean is_left;
 };
 
+enum response append_ts_to_node(struct dstree_index * index,
+                                struct dstree_node * node,
+                                ts_type * timeseries);
+
 struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settings) ;
 struct dstree_node * dstree_leaf_node_init();
 enum response node_init_segments(struct dstree_node * node, short * split_points, int segment_size);

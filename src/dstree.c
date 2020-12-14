@@ -265,9 +265,6 @@ int main (int argc, char **argv)
         //index : struct of index[total rechords, *dstree_node first, dstree_index_setting, dstree_file_buffer_manager, stats_info]
        index = dstree_index_init(index_settings);
 
-
-//---------------------->
-
        index->first_node = dstree_root_node_init(index->settings);
 
        if (index == NULL)
@@ -276,12 +273,13 @@ int main (int argc, char **argv)
           return -1;              
         }
         if (!use_ascii_input) {
-
+//---------------------->
 	    if (!dstree_index_binary_file(dataset, dataset_size, index))
             { 
                fprintf(stderr, "Error main.c:  Could not build the index.\n");
                return -1;              
             }
+
             COUNT_PARTIAL_TIME_END
 	    index->stats->idx_building_total_time  += partial_time
  						   +  index->stats->idx_traverse_tree_total_time 

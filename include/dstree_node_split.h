@@ -14,28 +14,37 @@
 #include "../config.h"
 #include "../globals.h"
 #include "dstree_index.h"
-/**
- @param   ts_type * indicators;
- @param int num_indicators;
+/** \Def Z of segment i
+ @param   ts_type * indicators; Z_i (min_u_i;max_u_i;min_std_i;max_std_i)
+ @param int num_indicators; |indicators|
  * */
 struct segment_sketch{
   ts_type * indicators;
   int num_indicators;
 }; 
-
+/**  \Def store the value and type(mean or std) of threshold used to H_Split
+  @param ts_type indicator_split_value;
+  @param int indicator_split_idx; //Set Idx = 0 for mean_based split and Idx = 1 for stdev_based split
+ * */
 struct node_segment_split_policy {
   ts_type indicator_split_value;
   int indicator_split_idx; //Set Idx = 0 for mean_based split and Idx = 1 for stdev_based split 
 };
-
+/**
+ \Def store info about the seg(hs seg) choosed for the splitting
+  @param short split_from; starting point, of the seg or hs seg choosed
+  @param short split_to; ending point, of the seg or hs seg choosed
+  @param struct node_segment_split_policy curr_node_segment_split_policy; the value and type(mean or std) of threshold used to H_Split
+  @param int indicator_split_idx;  // type of threshold used to H_split
+  @param ts_type indicator_split_value; // value of threshold
+  @param struct segment_sketch series_segment_sketch;
+ **/
 struct  node_split_policy {
   short split_from;
   short split_to;
   struct node_segment_split_policy curr_node_segment_split_policy;
-
   int indicator_split_idx;
   ts_type indicator_split_value;
-
   struct segment_sketch series_segment_sketch;
    
 };

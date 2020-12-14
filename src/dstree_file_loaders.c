@@ -465,7 +465,10 @@ enum response dstree_index_ascii_file(const char *ifilename, file_position_type 
 }
 
 
-
+/**
+ * DO : check the number of ts in dataset is correct,
+ * fetch data into the *index by looping the dstree_index_insert() in dstree_index.c
+ * */
 enum response dstree_index_binary_file(const char *ifilename, file_position_type ts_num, struct dstree_index *index)
 {
     double parse_time = 0;
@@ -580,6 +583,22 @@ enum response dstree_index_binary_file(const char *ifilename, file_position_type
 
       return SUCCESS;      
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 enum response reorder_query(ts_type * query_ts, ts_type * query_ts_reordered, int * query_order, int ts_length)
 {

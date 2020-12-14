@@ -1073,55 +1073,57 @@ void destroy_buffer_manager(struct dstree_index *index)
   }
  
 }
-
+/**
+\DO1 update internal nodes statistics, sketches and hs sketch if the new ts have min/max mean/std values for each segment
+\DO2  routing ts with node_split_policy_to_left(), using the split policy of the internal node
+\DO3
+ */
 enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeseries)
 {
 
   //traverse the index tree to find the appropriate node
   struct dstree_node * node = index->first_node;
 
-  while (!node->is_leaf)
-  {
-    if(!update_node_statistics(node, timeseries))
-    {
-	fprintf(stderr,"Error in dstree_index.c: could not update \
+  while (!node->is_leaf) {
+            if (!update_node_statistics(node, timeseries)) {
+                fprintf(stderr, "Error in dstree_index.c: could not update \
                         statistics at node %s\n", node->filename);
-        return  FAILURE;
-    }
-    
-    if (node_split_policy_route_to_left(node,timeseries))
-      node = node->left_child;
-    else
-      node = node->right_child;
-  }
- 
-            COUNT_PARTIAL_TIME_END
-	    index->stats->idx_traverse_tree_total_time  += partial_time;	
-	    index->stats->idx_traverse_tree_input_time  += partial_input_time;
-	    index->stats->idx_traverse_tree_output_time += partial_output_time;
-	    index->stats->idx_traverse_tree_cpu_time    += partial_time
-	                                           - partial_input_time
-	                                           - partial_output_time;
-	    index->stats->idx_traverse_tree_seq_input_count   += partial_seq_input_count;
-	    index->stats->idx_traverse_tree_seq_output_count  += partial_seq_output_count;
-	    index->stats->idx_traverse_tree_rand_input_count  += partial_rand_input_count;
-	    index->stats->idx_traverse_tree_rand_output_count += partial_rand_output_count;	    
- 
-	    RESET_PARTIAL_COUNTERS()
-	    COUNT_PARTIAL_TIME_START
-   
+                return FAILURE;
+            }
+
+            if (node_split_policy_route_to_left(node, timeseries))
+                node = node->left_child;
+            else
+                node = node->right_child;
+        }
+
+
+        COUNT_PARTIAL_TIME_END
+        index->stats->idx_traverse_tree_total_time += partial_time;
+        index->stats->idx_traverse_tree_input_time += partial_input_time;
+        index->stats->idx_traverse_tree_output_time += partial_output_time;
+        index->stats->idx_traverse_tree_cpu_time += partial_time
+                                                    - partial_input_time
+                                                    - partial_output_time;
+        index->stats->idx_traverse_tree_seq_input_count += partial_seq_input_count;
+        index->stats->idx_traverse_tree_seq_output_count += partial_seq_output_count;
+        index->stats->idx_traverse_tree_rand_input_count += partial_rand_input_count;
+        index->stats->idx_traverse_tree_rand_output_count += partial_rand_output_count;
+
+        RESET_PARTIAL_COUNTERS()
+        COUNT_PARTIAL_TIME_START
+
 
   if (node->is_leaf)
   {
-
-    if(!update_node_statistics(node, timeseries))
+      if(!update_node_statistics(node, timeseries))
     {
         fprintf(stderr,"Error in dstree_index.c: could not update \
                         statistics at node %s\n", node->filename);
         return FAILURE;
     }
-
-    if(!append_ts_to_node(index,node, timeseries))
+      //------>
+      if(!append_ts_to_node(index,node, timeseries))
     {
         fprintf(stderr,"Error in dstree_index.c: could not append \
                         time series to node %s\n", node->filename);
@@ -1679,8 +1681,6 @@ enum response dstree_update_index_stats(struct dstree_index *index, struct dstre
   
 }
 
-  
-			
 
 enum response dstree_node_write(struct dstree_index *index, struct dstree_node *node, FILE *file)
 {

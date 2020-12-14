@@ -26,10 +26,10 @@
 
 /**
  /// This function initializes a dstree root node using setting.
-  \F1 init node as a leaf node with dstree_leaf_node_init()
- \F2 with calc_split_point() :  init segmentation (1) and define node_point(ri) .
- \F3 with node_init_segment() : init sketches(Z) for each segment and hs-segment(all possible new segment after v split)
-  \F4     with create_dstree_node_filename()  store the name the leaf with meta data about leaf, the split policy of father leaf, in the buffer node->filename
+  \DO1 init node as a leaf node with dstree_leaf_node_init()
+ \DO2 with calc_split_point() :  init segmentation (1) and define node_point(ri) .
+ \DO3 with node_init_segment() : init sketches(Z) for each segment and hs-segment(all possible new segment after v split)
+  \DO4     with create_dstree_node_filename()  store the name the leaf with meta data about leaf, the split policy of father leaf, in the buffer node->filename
  */
 
 struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settings) 
@@ -405,19 +405,14 @@ enum response create_dstree_node_filename(struct dstree_index_settings *settings
     return SUCCESS;
 }
 
-
+/**
+ \DEF looping over segments and hs_segments : Update the seg/hs_seg sketche if the new ts has the min/max mean/std **/
 enum response update_node_statistics(struct dstree_node * node, ts_type * timeseries)
 {
 
   //update vertical node_segment_sketch
   for (int i = 0; i < node->num_node_points; i++) {
-    int from = 0;
-    int to = 0;
-
-    from = get_segment_start(node->node_points, i);
-    to = get_segment_end(node->node_points, i);
-
-    if (!node_segment_sketch_update_sketch(&node->node_segment_sketches[i], timeseries, from,to))
+    if (!node_segment_sketch_update_sketch(&node->node_segment_sketches[i], timeseries, get_segment_start(node->node_points, i),get_segment_end(node->node_points, i)))
     {
         fprintf(stderr, "Error in dstree_index.c:  Could not update vertical sketch for node segment.\n");
         return FAILURE;                  
