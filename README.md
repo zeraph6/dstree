@@ -1,14 +1,15 @@
 # dstree
 
+<h5>#check version in CMakeLists.txt</h5>
 <h4>------BUILD</h4>
 mkdir build</br>
 cd build</br>
-cmake .. #check version in CMakeLists.txt</br>
+cmake .. </br>
 make</br>
 <h4>------Release</h4>
 mkdir release</br>
-cd build</br>
-cmake -DCMAKE_BUILD_TYPE=RELEASE .. #check version in CMakeLists.txt</br>
+cd release</br>
+cmake -DCMAKE_BUILD_TYPE=RELEASE ..</br>
 make</br>
 <h4>-------RUN</h4>
    <h6> 1-CREATING Index (5GB datatset)</h6>
