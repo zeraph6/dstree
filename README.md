@@ -5,6 +5,11 @@ mkdir build</br>
 cd build</br>
 cmake .. #check version in CMakeLists.txt</br>
 make</br>
+<h4>------Release</h4>
+mkdir release</br>
+cd build</br>
+cmake -DCMAKE_BUILD_TYPE=RELEASE .. #check version in CMakeLists.txt</br>
+make</br>
 <h4>-------RUN</h4>
    <h6> 1-CREATING Index (5GB datatset)</h6>
     --dataset /home/zeraph/lernaean-hydra/DATA/data_size25kk_25GB_seed1184_len256_znorm.bin
