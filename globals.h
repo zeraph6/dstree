@@ -18,6 +18,8 @@
 #include "string.h"
 #include "float.h"
 #include <math.h>
+//may be included or not
+#include <stdbool.h>
 #include <jemalloc/jemalloc.h>
 
 
