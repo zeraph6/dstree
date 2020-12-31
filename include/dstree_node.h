@@ -91,7 +91,6 @@ struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settin
 struct dstree_node * dstree_leaf_node_init();
 enum response node_init_segments(struct dstree_node * node, short * split_points, int segment_size);
 
-enum response append_ts_to_node(struct dstree_index * index, struct dstree_node * node, ts_type * timeseries);  
 enum response update_node_statistics(struct dstree_node * node, ts_type * timeseries);
 
 enum response create_dstree_node_filename(struct dstree_index_settings *settings,
