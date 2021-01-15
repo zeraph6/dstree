@@ -19,7 +19,22 @@
 #include <string.h>
 #include "dstree_index.h"
 #include "dstree_file_buffer.h"
+/**
+ * file buffer manager of the index
+ *@param   struct dstree_file_map * file_map;
+  @param struct dstree_file_map * file_map_tail;
 
+  @param unsigned long max_buffered_size;
+  @param long current_count;
+  @param long batch_remove_size;
+
+  @param char *mem_array;
+  @param char *current_record;
+  @param int current_record_index;
+  @param int max_record_index;
+
+  @param int file_map_size;
+ * */
 struct dstree_file_buffer_manager {
   struct dstree_file_map * file_map;
   struct dstree_file_map * file_map_tail;  
@@ -36,7 +51,10 @@ struct dstree_file_buffer_manager {
   int file_map_size;
 };
 
-
+/***
+ * DSTREE_FILE_MAP * next,*prev
+ * DSTREE_FILE_BUFFER
+ * */
 struct dstree_file_map{
   struct dstree_file_buffer * file_buffer;
   struct dstree_file_map * next;

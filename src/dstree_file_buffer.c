@@ -29,8 +29,6 @@ enum response dstree_file_buffer_init(struct dstree_node *node)
     fprintf(stderr,"Error in dstree_file_buffer.c: Could not allocate memory for file buffer.\n");    
     return FAILURE;	
   }
-
-  //  node->file_buffer->filename = NULL;
   
   node->file_buffer->in_disk = false;
   node->file_buffer->disk_count = 0;

@@ -1074,6 +1074,7 @@ void destroy_buffer_manager(struct dstree_index *index)
  
 }
 /**
+ * \DEF : starting from the root node, while routing to corresponding leaf node do
 \DO1 update internal nodes statistics, sketches and hs sketch if the new ts have min/max mean/std values for each segment
 \DO2  routing ts with node_split_policy_to_left(), using the split policy of the internal node
 \DO3

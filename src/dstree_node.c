@@ -228,6 +228,11 @@ enum response node_init_segments(struct dstree_node * node, short * split_points
 
 }
 
+
+/**
+ \DEF :
+ \DO1 : get_file_buffer(index,node): if not doesnt have struct dstree_file_buffer, init it and add it to file_map
+ * */
 enum response append_ts_to_node(struct dstree_index * index,
 				struct dstree_node * node,
 				ts_type * timeseries)

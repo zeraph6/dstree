@@ -134,7 +134,12 @@ enum response node_segment_sketch_update_sketch(struct segment_sketch * node_seg
 
    return SUCCESS;
 }
-
+/**
+ * \DEF : calculate sketch of ts using policy splitting of node, decide which child to root ts to
+ * \DO1 : with series_segment_sketch_do_sketch() do calculate the sketching for the ts using
+ * node split policy(border of the concerned sketch(or hs sketch in the case of vertical splitting+ indicator used(mean or std))
+ * \DO2 : compare and return true if root to left and false if right
+ * **/
 boolean node_split_policy_route_to_left (struct dstree_node * node, ts_type * series)
 {
 

@@ -118,7 +118,13 @@ enum response set_buffered_memory_size(struct dstree_index * index)
   Upon return, the node->file_buffer contains the file buffer of this node
   And index->buffer_manager file map includes this new buffer
  */
-
+/**
+ * \DO1 if node doesnt have file buffer(struct dstree_file_buffer) yet,
+ init file buffer for node using dstree_file_buffer_init(node), and  map this buffer in the index->buffer_manager
+ \DO2 add_file_buffer_to_map(index,node),
+ \dstree_file_buffer__ : *node, *postion in dstree_file_map, **buffered_list ts_type, in_disk false, buffered_list_size,disk_count 0, do_not_flush false
+ \dstree_file_map__ : dstree_file_buffer, *prev dstree_file_map, *next dstree_file_map
+ * **/
 enum response get_file_buffer(struct dstree_index *index, struct dstree_node *node)
 {
   if (node->file_buffer == NULL) //node does not have a file buffer yet 

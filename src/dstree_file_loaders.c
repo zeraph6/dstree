@@ -466,8 +466,9 @@ enum response dstree_index_ascii_file(const char *ifilename, file_position_type 
 
 
 /**
- * DO : check the number of ts in dataset is correct,
- * fetch data into the *index by looping the dstree_index_insert() in dstree_index.c
+ * \DEF : build the index using timeseries in dataset
+ *  \DO1 : check the number of ts in dataset is correct,
+ *  \DO2 : iteratively build the index using dstree_index_insert()
  * */
 enum response dstree_index_binary_file(const char *ifilename, file_position_type ts_num, struct dstree_index *index)
 {
@@ -510,12 +511,7 @@ enum response dstree_index_binary_file(const char *ifilename, file_position_type
     }
     	
     file_position_type ts_loaded = 0;    
-    
-    int percentage = 100;
-    if (percentage > 100)
-    {
-       percentage = (int) (ts_num / (file_position_type) 100);
-    }
+
 
     while (ts_loaded<ts_num)
     {
@@ -528,7 +524,7 @@ enum response dstree_index_binary_file(const char *ifilename, file_position_type
 	COUNT_PARTIAL_INPUT_TIME_START
         fread(ts, sizeof(ts_type), index->settings->timeseries_size, ifile);
         COUNT_PARTIAL_INPUT_TIME_END
-
+//-----
 	if (!dstree_index_insert(index,ts))
 	  {
            fprintf(stderr, "Error in dstree_file_loaders.c:  Could not \
@@ -551,12 +547,6 @@ enum response dstree_index_binary_file(const char *ifilename, file_position_type
 
         ts_loaded++;
 
-     
-        if(ts_loaded % percentage == 0)
-        {
-           float distance = 0;
-	   //PRINT_STATS(distance)
-        }
 
      }
 
