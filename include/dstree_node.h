@@ -25,7 +25,7 @@
     @param short * hs_node_points;//breakpoints of hs segments
     @param struct segment_sketch * node_segment_sketches;
     @param struct segment_sketch * hs_node_segment_sketches;
-    @param struct node_split_policy * split_policy;
+    @param struct node_split_policy * split_policy;//breakpoint of choosed segment/hs segment to split, value and type of split, sketch of segment,node_segment_split_policy
 
     @param struct dstree_node *left_child;
     @param struct dstree_node *right_child;
@@ -44,11 +44,11 @@
     @param int max_segment_length;
     @param int max_value_length;
 
-    unsigned int node_size;
-    unsigned int level;
+    @param unsigned int node_size;
+    @param unsigned int level;
 
-    unsigned char is_leaf;
-    boolean is_left;
+    @param unsigned char is_leaf;
+    @param boolean is_left;
  * **/
 struct dstree_node {
 
