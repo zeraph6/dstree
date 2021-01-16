@@ -55,6 +55,9 @@ enum response init_file_buffer_manager(struct dstree_index *index)
 
   return SUCCESS;
 }
+/**
+ *
+ * **/
 enum response set_buffered_memory_size(struct dstree_index * index)
 {
   if(index == NULL)
@@ -121,7 +124,7 @@ enum response set_buffered_memory_size(struct dstree_index * index)
 /**
  * \DO1 if node doesnt have file buffer(struct dstree_file_buffer) yet,
  init file buffer for node using dstree_file_buffer_init(node), and  map this buffer in the index->buffer_manager
- \DO2 add_file_buffer_to_map(index,node),
+ \DO2 add_file_buffer_to_map(index,node), allocate and create dstree_file_map for the new dstree_file_buffer, and add it to the tail of dstree_file_map linked list within buffer_manager of index
  \dstree_file_buffer__ : *node, *postion in dstree_file_map, **buffered_list ts_type, in_disk false, buffered_list_size,disk_count 0, do_not_flush false
  \dstree_file_map__ : dstree_file_buffer, *prev dstree_file_map, *next dstree_file_map
  * **/
@@ -208,16 +211,7 @@ enum response add_file_buffer_to_map(struct dstree_index * index, struct dstree_
     }
     else
     {
-      struct dstree_file_map * currP = index->buffer_manager->file_map;
       struct dstree_file_map * lastP = index->buffer_manager->file_map_tail;
-
-      /*
-      
-      while(currP->next != NULL)
-      {
-	currP = currP->next;
-      }
-      */
 
       lastP->next = malloc(sizeof(struct dstree_file_map));
 

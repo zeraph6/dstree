@@ -18,7 +18,9 @@
 #include "../include/dstree_file_buffer_manager.h"
 #include "../include/dstree_index.h"
 #include "../include/calc_utils.h"
-
+/**
+ * allocate and init struct dstree_file_buffer of a node with in_disk false,disk_count 0,buffered_list null, pos in linked list file_buffer_map null, do_not_flush false
+ * **/
 enum response dstree_file_buffer_init(struct dstree_node *node)
 {
 

@@ -230,8 +230,9 @@ enum response node_init_segments(struct dstree_node * node, short * split_points
 
 
 /**
- \DEF :
- \DO1 : get_file_buffer(index,node): if not doesnt have struct dstree_file_buffer, init it and add it to file_map
+ \DO1 : get_file_buffer(index,node): if not doesnt have struct dstree_file_buffer, init it and add it to dstree_file_map linked list
+ \DO2 : get node's buffered list size if its == 0, allocate memory for the buffered list : (size of *ts * max_leaf_size from index setting;
+ \DO3 : get address of latest free position to store the first float of a ts in the mem_array
  * */
 enum response append_ts_to_node(struct dstree_index * index,
 				struct dstree_node * node,
@@ -252,9 +253,10 @@ enum response append_ts_to_node(struct dstree_index * index,
     return FAILURE;              
   }
 
-  int idx = node->file_buffer->buffered_list_size;  
+  int idx = node->file_buffer->buffered_list_size;
 
   int ts_length = index->settings->timeseries_size;
+  
   int max_leaf_size = index->settings->max_leaf_size;
 
   if (idx == 0)
@@ -268,13 +270,10 @@ enum response append_ts_to_node(struct dstree_index * index,
                          allocate memory for the buffered list. \n");
         return FAILURE;                  
       }
-  }
-  /*
-  node->file_buffer->buffered_list[idx] = NULL;
-  node->file_buffer->buffered_list[idx] = malloc(sizeof(ts_type) * ts_length);
-  */
+  }//if leaf has no ts, init buffered_list(max_leaf_size*pointer to ts structure)
 
-  node->file_buffer->buffered_list[idx] = (ts_type *) index->buffer_manager->current_record;
+//-------------------------------get the latest available position
+  node->file_buffer->buffered_list[idx] = (ts_type *) index->buffer_manager->current_record;//char to *float
   index->buffer_manager->current_record += sizeof(ts_type) * ts_length;
   index->buffer_manager->current_record_index++;
     
