@@ -1077,7 +1077,17 @@ void destroy_buffer_manager(struct dstree_index *index)
  * \DEF : starting from the root node, while routing to corresponding leaf node do
 \DO1 update internal nodes statistics, sketches and hs sketch if the new ts have min/max mean/std values for each segment
 \DO2  routing ts with node_split_policy_to_left(), using the split policy of the internal node
-\DO3
+\DO3 In the leaf node, init a dstree_file_buffer and to the linked list dstree_file_map if necessary;
+\DO4 store ts to mem_array, and its & in file_buffer->buffered_list, update the other informations
+\DO5 <b>IF node->size > setting->max_leaf_size :</b> <i> Init node_split_policy, set B to -INF</i><br>
+   for every segment i calculate its QOS and Qos of its children using for every possible split, then calculate the B_i and check if its > B;<br>
+        <b> Choose split_strategy that gives max B
+
+
+   \main_idea_of_splitting maximize difference between QOS of parent and QOS of new children, hmmm basically we try to minimize QOS (len*(difference_between_minandmax_mean² + max_std²)) of leaves, so we select the splitting strategy giving the max diff between qos of parent and the avg qos of its two new children
+<br> <b>range=Qos</b>
+
+
  */
 enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeseries)
 {
@@ -1123,7 +1133,7 @@ enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeser
                         statistics at node %s\n", node->filename);
         return FAILURE;
     }
-      //------>
+
       if(!append_ts_to_node(index,node, timeseries))
     {
         fprintf(stderr,"Error in dstree_index.c: could not append \
@@ -1152,7 +1162,7 @@ enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeser
     {
 
       struct node_split_policy curr_node_split_policy;
-      ts_type max_diff_value = (FLT_MAX * (-1));
+      ts_type max_diff_value = (FLT_MAX * (-1));//set init B to -INF, and try to find the max split strategy that maximize B
       ts_type avg_children_range_value = 0;
       short hs_split_point = -1;
       short * child_node_points;
@@ -1161,7 +1171,7 @@ enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeser
 
       //we want to test every possible split policy for each segment
       
-      //for each segment 
+      //for each segment
       for (int i=0; i <  node->num_node_points;++i)
       { 
 	struct segment_sketch curr_node_segment_sketch = node->node_segment_sketches[i];
@@ -1338,7 +1348,8 @@ enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeser
           free(child_node_segment_sketches);
 	} 
       }
-      
+
+      // we create node->split_policy for the choosen split policy
       node->split_policy = NULL;
       node->split_policy = malloc (sizeof(struct node_split_policy));
       if(node->split_policy == NULL)

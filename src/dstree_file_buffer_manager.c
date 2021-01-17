@@ -13,6 +13,16 @@
 #include "../include/dstree_file_buffer_manager.h"
 
  /**
+  * \DO1 : init the index dstree_file_buffer_manager :
+  * @param max_buffered_size = number of float possible to store on the input buffer
+  * @param batch_remove_size = max_buffered_size/2
+  * @param mem_array = & remaining space of the allowed memory after taking off the space needed to store the meta data of each leaf buffer(dstree_file_buffer and pointers to ts of the leaf)
+  * @param current_recod_index = record of current ts used as offset in the mem_array
+  * @param current_record = & of current_record in the mem_array, at init it eq to &mem_array
+  * @param max_record_index = mem_array_size(#ts)
+  * @param current_count = #ts in memory
+  * @param file_map, file_map_tail, file_map_size = head and tail and size of dstree_file_map linked list
+  *
    init the buffer manager of dstree_index structure with :
             max buffered size => number of ts that can be stored in the size of buffer given in input
             current_count = 0 => number of ts points in memory ;
@@ -26,7 +36,20 @@
             memory slots.
             This array is released after the index is materialized to disk.
 
-  * @param a pointer on struct dstree_index *index
+            \mem_array is a giant memory array of size
+            buffered_memory_size in MB per user input.
+
+            It holds X number of ts buffers:
+            X = (num_bytes)/(sizeof(ts_type) * ts_length * max_leaf_size)
+
+            At initialization time, an entire array of memory is locked
+            to contain the buffered time series. This has proven to be
+            more efficient causing less fragmentation compared to
+            a large number of allocations and deallocations of small
+            memory slots.
+            This array is released after the index is materialized to disk.
+
+
   * @return response 0 or 1
   * **/
 enum response init_file_buffer_manager(struct dstree_index *index)
@@ -55,9 +78,7 @@ enum response init_file_buffer_manager(struct dstree_index *index)
 
   return SUCCESS;
 }
-/**
- *
- * **/
+
 enum response set_buffered_memory_size(struct dstree_index * index)
 {
   if(index == NULL)
@@ -73,20 +94,7 @@ enum response set_buffered_memory_size(struct dstree_index * index)
 	index->buffer_manager->max_buffered_size = (long) (index->settings->buffered_memory_size * 1024 * 1024 / sizeof(ts_type));	
         index->buffer_manager->batch_remove_size = index->buffer_manager->max_buffered_size /2;
 
-        /*
-            The mem_array is a giant memory array of size 
-            buffered_memory_size in MB per user input. 
 
-            It holds X number of ts buffers:
-            X = (num_bytes)/(sizeof(ts_type) * ts_length * max_leaf_size)
-
-            At initialization time, an entire array of memory is locked
-            to contain the buffered time series. This has proven to be
-            more efficient causing less fragmentation compared to
-            a large number of allocations and deallocations of small 
-            memory slots.
-            This array is released after the index is materialized to disk.  
-	*/
         int max_leaf_size = index->settings->max_leaf_size;
         unsigned long leaf_size = index->settings->max_leaf_size;
 	unsigned long ts_size= sizeof(ts_type) * index->settings->timeseries_size;
@@ -117,10 +125,7 @@ enum response set_buffered_memory_size(struct dstree_index * index)
 }
 
 
-/*
-  Upon return, the node->file_buffer contains the file buffer of this node
-  And index->buffer_manager file map includes this new buffer
- */
+
 /**
  * \DO1 if node doesnt have file buffer(struct dstree_file_buffer) yet,
  init file buffer for node using dstree_file_buffer_init(node), and  map this buffer in the index->buffer_manager

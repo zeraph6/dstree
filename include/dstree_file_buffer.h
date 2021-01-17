@@ -27,7 +27,7 @@
  @param unsigned int disk_count; //  by default
  @param int buffered_list_size;   //number of series currently stored in this buffer
  @param boolean in_disk; //false by default
- @param   boolean do_not_flush;
+ @param   boolean do_not_flush; //false
 
 */
 struct dstree_file_buffer {

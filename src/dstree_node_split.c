@@ -31,7 +31,7 @@ enum response mean_node_segment_split_policy_split(struct node_segment_split_pol
   ts_type max_mean = sketch.indicators[0]; 
   ts_type min_mean = sketch.indicators[1];
   
-  policy->indicator_split_idx = 0 ;  //stdev based split
+  policy->indicator_split_idx = 0 ;  //mean based split
   policy->indicator_split_value = (max_mean + min_mean) / 2;  //the mean value is split value
 
   ret[0].num_indicators = sketch.num_indicators;
@@ -300,7 +300,7 @@ short get_hs_split_point(short * points, short from, short to, int size_points)
 }
 
 
-
+/**@return  node_segment_split_policy.indicator_split_idx == 0*/
 boolean is_split_policy_mean(struct node_segment_split_policy policy)
 {
   
@@ -320,15 +320,14 @@ boolean is_split_policy_stdev(struct node_segment_split_policy policy)
   
 
 }
-
+/**
+ @return QOS = len of seg * [(max_mean - min_mean)² + max_std²]
+  */
 ts_type range_calc(struct segment_sketch sketch, int len)
 {
   ts_type mean_width = sketch.indicators[0] -sketch.indicators[1];
   ts_type stdev_upper = sketch.indicators[2];
-  ts_type stdev_lower = sketch.indicators[3];
-
   return len * (mean_width * mean_width + stdev_upper * stdev_upper);
-  
 }
 
 /**

@@ -232,7 +232,9 @@ enum response node_init_segments(struct dstree_node * node, short * split_points
 /**
  \DO1 : get_file_buffer(index,node): if not doesnt have struct dstree_file_buffer, init it and add it to dstree_file_map linked list
  \DO2 : get node's buffered list size if its == 0, allocate memory for the buffered list : (size of *ts * max_leaf_size from index setting;
- \DO3 : get address of latest free position to store the first float of a ts in the mem_array
+ \DO3 : get address of latest free position in the mem_array to file_buffer->buffered_list and store ts in that &.
+ Add offset to that address for the next ts.
+ Increment current_record_index and file_buffer->buffered_list_size b one, and buffer_manager->current record by 256
  * */
 enum response append_ts_to_node(struct dstree_index * index,
 				struct dstree_node * node,
@@ -272,7 +274,7 @@ enum response append_ts_to_node(struct dstree_index * index,
       }
   }//if leaf has no ts, init buffered_list(max_leaf_size*pointer to ts structure)
 
-//-------------------------------get the latest available position
+
   node->file_buffer->buffered_list[idx] = (ts_type *) index->buffer_manager->current_record;//char to *float
   index->buffer_manager->current_record += sizeof(ts_type) * ts_length;
   index->buffer_manager->current_record_index++;
