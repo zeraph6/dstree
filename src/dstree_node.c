@@ -297,7 +297,16 @@ enum response append_ts_to_node(struct dstree_index * index,
     
   return SUCCESS;
 }
+/**
 
+
+  <ul><li><b>get_file_buffer() :</b> init node dstree_file_buffer and add it to the buffer_manager map of file_buffers</li>
+  <li><b>if the buffered_list of node file_buffer is NULL</b>, allocate memory for (leaf_size) float*, to point on the new ts added to mem_array</li>
+  <li><b>get_file_buffer() :</b> init node dstree_file_buffer and add it to the buffer_manager map of file_buffers</li>
+
+
+  </ul>
+  */
 enum response append_ts_to_child_node(struct dstree_index * index,
 				struct dstree_node * node,
 				ts_type * timeseries)

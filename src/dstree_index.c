@@ -1082,7 +1082,8 @@ void destroy_buffer_manager(struct dstree_index *index)
 \DO5 <b>IF node->size > setting->max_leaf_size :</b> <i> Init node_split_policy, set B to -INF</i><br>
    for every segment i calculate its QOS and Qos of its children using for every possible split, then calculate the B_i and check if its > B;<br>
         <b> Choose split_strategy that gives max B
-
+        <br> IF HS is selected, children node will have additional node_point
+\DO6 Create child nodes and init them with specific information and new node_point
 
    \main_idea_of_splitting maximize difference between QOS of parent and QOS of new children, hmmm basically we try to minimize QOS (len*(difference_between_minandmax_mean² + max_std²)) of leaves, so we select the splitting strategy giving the max diff between qos of parent and the avg qos of its two new children
 <br> <b>range=Qos</b>
@@ -1434,7 +1435,9 @@ enum response dstree_index_insert(struct dstree_index *index,  ts_type * timeser
       }
 
       free(child_node_points);
-
+/***
+  node->file_buffer->do_not_flush = true;
+ */
      node->file_buffer->do_not_flush = true;
 
      if (!get_file_buffer(index, node))

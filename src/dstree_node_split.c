@@ -177,12 +177,17 @@ boolean node_split_policy_route_to_left (struct dstree_node * node, ts_type * se
 }
 
 
-
+/**
+<ul>For both leaf and right childs do :
+ <li>create_child_node(node) : create child node</li>
+ <li>node_init_segment using child_node_points </li>
+ <li>create child node filename</li>
+ <ul>
+ */
 enum response split_node (struct dstree_index * index, struct dstree_node * node, short * child_node_points, int num_child_node_points)
 {
   if (!node->is_leaf)
   {
-	
         fprintf(stderr,"Error in dstree_node_split.c: Trying to split a node  \
                         that is not a leaf %s.\n", node->filename);
 	return FAILURE;
@@ -249,12 +254,11 @@ enum response split_node (struct dstree_index * index, struct dstree_node * node
   return SUCCESS;
 }
 	
-	
+/**
+<b> dstree_leaf_node_init()  <br> child inherit parent node_segment_split_policy  and num_segment_split_policies, range(0)*/
 struct dstree_node *  create_child_node(struct dstree_node * parent) 
 {
 
-
-    
   struct dstree_node * child_node = dstree_leaf_node_init();
 
   if (child_node == NULL)
@@ -279,7 +283,7 @@ struct dstree_node *  create_child_node(struct dstree_node * parent)
   return child_node;
 }
 
-
+/** return hs_point_from if the hs_point_to belongs to node_point**/
 short get_hs_split_point(short * points, short from, short to, int size_points) 
 {
 
@@ -300,7 +304,7 @@ short get_hs_split_point(short * points, short from, short to, int size_points)
 }
 
 
-/**@return  node_segment_split_policy.indicator_split_idx == 0*/
+/**@return  boolean node_segment_split_policy.indicator_split_idx == 0*/
 boolean is_split_policy_mean(struct node_segment_split_policy policy)
 {
   

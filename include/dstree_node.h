@@ -19,9 +19,10 @@
 #include "dstree_file_buffer.h"
 #include "pqueue.h"
 #include "dstree_query_engine.h"
+
 /** node_structure
     @param struct node_segment_split_policy * node_segment_split_policies;//split value and type(mean/std)
-    @param short * node_points;//breakpoints of segments
+    @param short * node_points;//breakpoints of segments (ri)
     @param short * hs_node_points;//breakpoints of hs segments
     @param struct segment_sketch * node_segment_sketches;
     @param struct segment_sketch * hs_node_segment_sketches;
@@ -35,9 +36,9 @@
 
     @param char * filename;
 
-    @param mean_stdev_range range;
+    @param mean_stdev_range range; //init by 0 and stay 0, no idea why
 
-    @param int num_node_segment_split_policies;
+    @param int num_node_segment_split_policies; // Mean and std
     @param short num_node_points;  //number of vertical split points
     @param short num_hs_node_points;  //number of horizontal split points
 
@@ -57,7 +58,7 @@ struct dstree_node {
     short * hs_node_points;
     struct segment_sketch * node_segment_sketches;
     struct segment_sketch * hs_node_segment_sketches;
-    struct node_split_policy * split_policy; 
+    struct node_split_policy * split_policy;
 
     struct dstree_node *left_child;
     struct dstree_node *right_child;
@@ -67,15 +68,15 @@ struct dstree_node {
 
     char * filename;
 
-    mean_stdev_range range;  
- 
-    int num_node_segment_split_policies;  
+    mean_stdev_range range;
+
+    int num_node_segment_split_policies;
     short num_node_points;  //number of vertical split points
     short num_hs_node_points;  //number of horizontal split points
 
-    int max_segment_length; 
-    int max_value_length; 
-  
+    int max_segment_length;
+    int max_value_length;
+
     unsigned int node_size;
     unsigned int level;
 
@@ -83,13 +84,15 @@ struct dstree_node {
     boolean is_left;
 };
 
-enum response append_ts_to_node(struct dstree_index * index,
-                                struct dstree_node * node,
-                                ts_type * timeseries);
-
 struct dstree_node * dstree_root_node_init(struct dstree_index_settings * settings) ;
 struct dstree_node * dstree_leaf_node_init();
 enum response node_init_segments(struct dstree_node * node, short * split_points, int segment_size);
+enum response append_ts_to_node(struct dstree_index * index,
+                                struct dstree_node * node,
+                                ts_type * timeseries);
+enum response append_ts_to_child_node(struct dstree_index * index,
+                                struct dstree_node * node,
+                                ts_type * timeseries);
 
 enum response update_node_statistics(struct dstree_node * node, ts_type * timeseries);
 
