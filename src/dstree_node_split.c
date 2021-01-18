@@ -182,7 +182,7 @@ boolean node_split_policy_route_to_left (struct dstree_node * node, ts_type * se
  <li>create_child_node(node) : create child node</li>
  <li>node_init_segment using child_node_points </li>
  <li>create child node filename</li>
- <ul>
+ </ul>
  */
 enum response split_node (struct dstree_index * index, struct dstree_node * node, short * child_node_points, int num_child_node_points)
 {
