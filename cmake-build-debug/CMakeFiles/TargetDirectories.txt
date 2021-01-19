@@ -1,4 +1,0 @@
-C:/Users/lenovo/CLionProjects/dstree/cmake-build-debug/CMakeFiles/libdstree.dir
-C:/Users/lenovo/CLionProjects/dstree/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/lenovo/CLionProjects/dstree/cmake-build-debug/CMakeFiles/dstree.dir
-C:/Users/lenovo/CLionProjects/dstree/cmake-build-debug/CMakeFiles/rebuild_cache.dir
