@@ -469,6 +469,24 @@ enum response dstree_index_ascii_file(const char *ifilename, file_position_type 
  * \DEF : build the index using timeseries in dataset
  *  \DO1 : check the number of ts in dataset is correct,
  *  \DO2 : iteratively build the index using dstree_index_insert()
+ *  <br>
+ *  <center><h2>dstree_index_insert </center></h2>
+ *  \DEF : starting from the root node, while routing to corresponding leaf node do
+\DO1 update internal nodes statistics, sketches and hs sketch if the new ts have min/max mean/std values for each segment
+\DO2  routing ts with node_split_policy_to_left(), using the split policy of the internal node
+\DO3 In the leaf node, init a dstree_file_buffer and to the linked list dstree_file_map if necessary;
+\DO4 store ts to mem_array, and its & in file_buffer->buffered_list, update the other informations
+\DO5 <b>IF node->size > setting->max_leaf_size :</b> <i> Init node_split_policy, set B to -INF</i><br>
+   for every segment i calculate its QOS and Qos of its children using for every possible split, then calculate the B_i and check if its > B;<br>
+        <b> Choose split_strategy that gives max B
+        <br> IF HS is selected, children node will have additional node_point
+\DO6 Create child nodes and init them with specific information and new node_point
+ \DO7 get_file_buffer() for new nodes, and also to flush index buffer to disk if necessary(limit)
+ \DO8 copy parent node ts(either they are on disk, in memory, or both), and route them to children
+\DO9 deallocate space occupied by parent's buffer filename and dstree_file_buffer, and delete it from buffer_file_map linkedlist
+
+   \main_idea_of_splitting maximize difference between QOS of parent and QOS of new children, hmmm basically we try to minimize QOS (len*(difference_between_minandmax_mean² + max_std²)) of leaves, so we select the splitting strategy giving the max diff between qos of parent and the avg qos of its two new children
+<br> <b>range=Qos</b>
  * */
 enum response dstree_index_binary_file(const char *ifilename, file_position_type ts_num, struct dstree_index *index)
 {
@@ -524,7 +542,7 @@ enum response dstree_index_binary_file(const char *ifilename, file_position_type
 	COUNT_PARTIAL_INPUT_TIME_START
         fread(ts, sizeof(ts_type), index->settings->timeseries_size, ifile);
         COUNT_PARTIAL_INPUT_TIME_END
-//-----
+
 	if (!dstree_index_insert(index,ts))
 	  {
            fprintf(stderr, "Error in dstree_file_loaders.c:  Could not \

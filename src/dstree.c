@@ -273,7 +273,7 @@ int main (int argc, char **argv)
           return -1;              
         }
         if (!use_ascii_input) {
-//---------------------->
+
 	    if (!dstree_index_binary_file(dataset, dataset_size, index))
             { 
                fprintf(stderr, "Error main.c:  Could not build the index.\n");

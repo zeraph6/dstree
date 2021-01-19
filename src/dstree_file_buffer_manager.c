@@ -130,8 +130,14 @@ enum response set_buffered_memory_size(struct dstree_index * index)
  * \DO1 if node doesnt have file buffer(struct dstree_file_buffer) yet,
  init file buffer for node using dstree_file_buffer_init(node), and  map this buffer in the index->buffer_manager
  \DO2 add_file_buffer_to_map(index,node), allocate and create dstree_file_map for the new dstree_file_buffer, and add it to the tail of dstree_file_map linked list within buffer_manager of index
+\DO3 if the index buffer is near to its limit, flush the buffer to disk and start the buffer head at the start of mem array again
+
  \dstree_file_buffer__ : *node, *postion in dstree_file_map, **buffered_list ts_type, in_disk false, buffered_list_size,disk_count 0, do_not_flush false
  \dstree_file_map__ : dstree_file_buffer, *prev dstree_file_map, *next dstree_file_map
+ \OVERFLOW_HANDLE
+ to guard against the case that get_all_time_series is called while the buffer is almost full
+ we always flush the buffer before it is completely full since get_all_time_series loads
+ the full contents of a leaf size at once.
  * **/
 enum response get_file_buffer(struct dstree_index *index, struct dstree_node *node)
 {
@@ -152,11 +158,7 @@ enum response get_file_buffer(struct dstree_index *index, struct dstree_node *no
     }  
   }
 
-//  to guard against the case that get_all_time_series is called while the buffer is almost full
-//  we always flush the buffer before it is completely full since get_all_time_series loads
-//  the full contents of a leaf size at once.
-
-  int buffer_limit = index->buffer_manager->max_record_index - (2 * index->settings->max_leaf_size); 
+  int buffer_limit = index->buffer_manager->max_record_index - (2 * index->settings->max_leaf_size);
 
   if (index->buffer_manager->current_record_index > buffer_limit)  
   {

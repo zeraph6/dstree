@@ -24,9 +24,9 @@
  @param struct dstree_node * node; //the buffer points back to its node
  @param struct dstree_file_map * position_in_map; //the buffer points back to its position in file map
  @param ts_type ** buffered_list;
- @param unsigned int disk_count; //  by default
- @param int buffered_list_size;   //number of series currently stored in this buffer
- @param boolean in_disk; //false by default
+ @param unsigned int disk_count; // number of the leaf ts that are flushed to disk
+ @param int buffered_list_size;   //number of the leaf ts that are kept in memory
+ @param boolean in_disk; // 0 by default, turn to 1 if the leaf ts in memory has been flushed to disk
  @param   boolean do_not_flush; //false
 
 */
@@ -36,7 +36,7 @@ struct dstree_file_buffer {
   struct dstree_file_map * position_in_map; //the buffer points back to its position in file map
 
   ts_type ** buffered_list;
-  unsigned int disk_count; //  by default
+  unsigned int disk_count; // 0 by default
   int buffered_list_size;   //number of series currently stored in this buffer
 
   boolean in_disk; //false by default

@@ -46,7 +46,12 @@ enum response dstree_file_buffer_init(struct dstree_node *node)
   return SUCCESS;
   
 }
-
+/**
+ <ul><b>return data stored in node leaf :</b>
+ <li> If buffer_file->disk_count > 0 so there are ts stored in disk, copy them first.  then get the other leaf ts stored in memory </li>
+ <li> get all leaf ts from buffered_list(memoru) </li>
+ </ul>
+ */
 ts_type ** get_all_time_series_in_node(struct dstree_index * index, struct dstree_node * node) 
 {
 
@@ -57,7 +62,6 @@ ts_type ** get_all_time_series_in_node(struct dstree_index * index, struct dstre
      
   if (node->file_buffer->disk_count > 0)
   {
-      
       if(node->filename == NULL)
       {   
         fprintf(stderr, "Error in dstree_file_buffer.c: This node has data on disk but"
@@ -149,7 +153,10 @@ ts_type ** get_all_time_series_in_node(struct dstree_index * index, struct dstre
 }
 
 
+/**
+ copy append node buffered_list to disk file, and increment the disk_count for each ts. turn node.in_disk to true <br>
 
+ * */
 enum response flush_buffer_to_disk(struct dstree_index *index, struct dstree_node *node)
 {
   //is this file flush properly out1/06_R_0_(160,192,0.738156)_9
@@ -223,7 +230,9 @@ enum response flush_buffer_to_disk(struct dstree_index *index, struct dstree_nod
     return SUCCESS; 
     
 }
-
+/**
+ free space occupied by buffered_list, and turn buffered_list_size to 0
+ */
 enum response clear_file_buffer(struct dstree_index *index, struct dstree_node * node)
 {
 
@@ -246,7 +255,9 @@ enum response clear_file_buffer(struct dstree_index *index, struct dstree_node *
  return SUCCESS;  
 }
 
-
+/**
+ \DO deallocate space occupied by node buffer filename and dstree_file_buffer, and delete it from buffer_file_map linkedlist
+ */
 enum response delete_file_buffer(struct dstree_index * index,struct dstree_node * node)
 {
   
@@ -303,12 +314,12 @@ enum response delete_file_buffer(struct dstree_index * index,struct dstree_node 
        free(res);
        res = NULL;
        --index->buffer_manager->file_map_size;
-    
+
        if (!clear_file_buffer(index, node))
        {
          fprintf(stderr, "Error in dstree_file_buffer.c: Deleting node.. "
                           "Could not clear the buffer for %s.\n", node->filename);
-         return FAILURE;      
+         return FAILURE;
        }
 
    }

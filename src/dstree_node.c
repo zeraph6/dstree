@@ -301,9 +301,8 @@ enum response append_ts_to_node(struct dstree_index * index,
 
 
   <ul><li><b>get_file_buffer() :</b> init node dstree_file_buffer and add it to the buffer_manager map of file_buffers</li>
-  <li><b>if the buffered_list of node file_buffer is NULL</b>, allocate memory for (leaf_size) float*, to point on the new ts added to mem_array</li>
-  <li><b>get_file_buffer() :</b> init node dstree_file_buffer and add it to the buffer_manager map of file_buffers</li>
-
+  <li><b>if the buffered_list of node file_buffer is NULL</b>, allocate memory for (leaf_size) ts pointers</li>
+  <li>add the next free address of memarray to buffered_list so it point to it, and then copy the new ts into mem array at that adress </li>
 
   </ul>
   */
