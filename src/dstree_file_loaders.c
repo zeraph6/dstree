@@ -469,9 +469,10 @@ enum response dstree_index_ascii_file(const char *ifilename, file_position_type 
  * \DEF : build the index using timeseries in dataset
  *  \DO1 : check the number of ts in dataset is correct,
  *  \DO2 : iteratively build the index using dstree_index_insert()
- *  <br>
- *  <center><h2>dstree_index_insert </center></h2>
- *  \DEF : starting from the root node, while routing to corresponding leaf node do
+ *
+ *   <hr>
+ *  <h2><center>dstree_index_insert </center></h2>
+ *  <p>starting from the root node, while routing to corresponding leaf node do</p>
 \DO1 update internal nodes statistics, sketches and hs sketch if the new ts have min/max mean/std values for each segment
 \DO2  routing ts with node_split_policy_to_left(), using the split policy of the internal node
 \DO3 In the leaf node, init a dstree_file_buffer and to the linked list dstree_file_map if necessary;
