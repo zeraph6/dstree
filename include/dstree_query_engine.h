@@ -19,20 +19,32 @@
 
 #include "dstree_node.h"
 #include "pqueue.h"
-
+/**
+  @param ts_type distance;
+  @param struct dstree_node *node;
+  @param ts_type max_distance;
+  @param size_t pqueue_position;//unsigned long
+ */
 typedef struct query_result {
   ts_type distance;
   struct dstree_node *node;
   ts_type max_distance;
   size_t pqueue_position;
 };
-
+/**
+  @param ts_type distance;
+  @param double time;
+*/
 typedef struct bsf_snapshot {
   ts_type distance;
   double time;  
 };
 
 /// Data structure for sorting the query.
+/**
+  @param double value;
+  @param      int  index;
+ */
 typedef struct q_index
     {   double value;
         int    index;

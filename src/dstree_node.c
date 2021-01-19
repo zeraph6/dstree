@@ -462,7 +462,14 @@ enum response update_node_statistics(struct dstree_node * node, ts_type * timese
   and the time series in the node.
 
  */
+/**
+ \DEF givien a leaf node and a ts_query; calculate knn distances
 
+ <br><b>If ts are in disk(buffered_list_size ==0):</b> get_all_time_series_in_node(node,index)|<i>leaf data is either fully on disk or in memory</i>|.
+<br><b>For each ts in file_buffer->buffered_list : </b> distance = ts_euclidean_distance_reordered, and store knn in query_result *knn_result
+
+ <br>Deallocate buffered_list and return the buffered_list_size to 0
+ */
 void calculate_node_knn_distance (struct dstree_index *index, struct dstree_node *node,
 				  ts_type *query_ts_reordered, int *query_order,
 				  unsigned int offset, ts_type bsf,
@@ -470,7 +477,7 @@ void calculate_node_knn_distance (struct dstree_index *index, struct dstree_node
 				  struct query_result  *knn_results,
 				  struct bsf_snapshot ** bsf_snapshots,
 				  unsigned int *cur_bsf_snapshot,
-				  unsigned int * cur_size)
+				  unsigned int * cur_size)//1
 {
      ts_type distance = FLT_MAX;
 
@@ -748,7 +755,6 @@ int queue_bounded_sorted_insert(struct  query_result *q, struct query_result d, 
    
     if (!is_duplicate)
       {
-    
 	/* the queue is full, overwrite last element*/
 	if (*cur_size == k) {      
 	  q[k-1].distance = d.distance;

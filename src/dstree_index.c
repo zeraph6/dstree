@@ -1585,7 +1585,13 @@ enum response dstree_index_write(struct dstree_index *index)
 	  
 	return SUCCESS;
 }
-
+/**
+ <ul>
+ <li>Read meta information  about index setting and init index_setting with dstree_index_setting() </li>
+ <li>using index_setting, init index using dstree_index_init()</li>
+ <li>read the nodes data and information from file index and init root_node using dstree_node_read()</li>
+ </ul>
+ */
 struct dstree_index * dstree_index_read(const char* root_directory)
 {
         if(chdir(root_directory) != 0)
@@ -1786,7 +1792,11 @@ enum response dstree_node_write(struct dstree_index *index, struct dstree_node *
 	
 	return SUCCESS;
 }
-
+/**
+ Init node by reading meta information of the node from the file, without loading ts(if node is leaf) into buffer(disk_count==node_size).
+ <br>If node is leaf, init its file buffer
+ <br>If node is internal, dstree_node_read its children
+ * */
 struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 
         struct dstree_node *node = NULL;

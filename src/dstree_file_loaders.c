@@ -163,7 +163,33 @@ enum response dstree_query_binary_file(const char *ifilename, int q_num, struct 
 
      return SUCCESS;
 }
+/**
+ <ul>
+ <li>Load query sequentially; set the decreasing order of query ts</li>
+ <li>execute EXACT_DE_KNN_SEARCH<li>
+ </ul>
+ \EXACT_DE_KNN_SEARCH
 
+ <ul>
+ <li>Init k query_result[node,distance] with  [Null, INF]</li>
+ <li>run approximate_knn_search(index,query,k) to get k==1 NN  query_result as BSF</li>
+ <li>init the pq, and insert root node first</li>
+ <li><ul>while we can pop node from pq
+     <li><b>if LBdistance(popped_node,query) > Dbsf </b> : break from while cuz we dont have to take this pist since its lower bounded distance is great(no need to check from the childrens in this pist)</li>
+        <li>if the poped node is leaf : calculate_node_knn_distance(index,node,k,knn_result) which update knn_results</li>
+        <li>if the popped node is internal : calculate lb distance between query and its 2 childrens, if its < Dbsf => insert them in pq</li> </ul></li>
+ </ul>
+ @param k=1, qfilename queries file, offset=0
+ \APPROXIMATE_KNN_SEARCH
+ get the k best neighbors from one leaf
+ <br>rooting ts until it gets to the leaf node with most similar summarization, then
+ <br><h3>calculate_node_knn_distance()</h3>
+   \DEF givien a leaf node and a ts_query; calculate knn distances
+
+ <br><b>If ts are in disk(buffered_list_size ==0):</b> get_all_time_series_in_node(node,index)|<i>leaf data is either fully on disk or in memory</i>|.
+<br><b>For each ts in file_buffer->buffered_list : </b> distance = ts_euclidean_distance_reordered, and store knn in query_result *knn_result
+ <br>Deallocate buffered_list and return the buffered_list_size to 0
+ * */
 enum response dstree_knn_query_binary_file(const char *ifilename,
 					   int q_num,
 					   struct dstree_index *index,
