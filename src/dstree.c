@@ -449,7 +449,7 @@ int main (int argc, char **argv)
 	      fprintf(stderr,"Using r_delta = %lf.\n", r_delta);
            
 	    }	    
-           //answer delta-epsilon kNN queries, including k=1
+           //answer delta-epsilon(APP/EXACT) kNN queries, including k=1
 	    dstree_knn_query_binary_file(queries, queries_size, index,
 					 minimum_distance, epsilon, r_delta,
 					 k,track_bsf,track_pruning, all_mindists,
