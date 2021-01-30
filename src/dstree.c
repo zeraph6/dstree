@@ -593,7 +593,7 @@ int main (int argc, char **argv)
      
     //printf("\n");
 
-    malloc_stats_print(NULL, NULL, NULL);    
+   // malloc_stats_print(NULL, NULL, NULL);
     return 0;
 }
 

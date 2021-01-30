@@ -51,6 +51,7 @@
     @param unsigned char is_leaf;
     @param boolean is_left;
  * **/
+static int n = 1;
 struct dstree_node {
 
     struct node_segment_split_policy * node_segment_split_policies;
@@ -69,7 +70,7 @@ struct dstree_node {
     char * filename;
 
     mean_stdev_range range;
-
+    int id;
     int num_node_segment_split_policies;
     short num_node_points;  //number of vertical split points
     short num_hs_node_points;  //number of horizontal split points

@@ -1592,6 +1592,7 @@ enum response dstree_index_write(struct dstree_index *index)
  <li>read the nodes data and information from file index and init root_node using dstree_node_read()</li>
  </ul>
  */
+
 struct dstree_index * dstree_index_read(const char* root_directory)
 {
         if(chdir(root_directory) != 0)
@@ -1942,12 +1943,12 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 		node->filename = NULL;
 		//node->node_size = 0;
 	}
-
+	node->id = n++;
 	if(!is_leaf) {
 		node->left_child = dstree_node_read(index, file);
 		node->right_child = dstree_node_read(index, file);
 	}
-
+    fprintf(stderr,"-------------------->Load Node ID %i \n",node->id);
 	return node;
 }
 

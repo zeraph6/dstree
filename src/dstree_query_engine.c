@@ -391,7 +391,7 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
 			ts_type epsilon, ts_type r_delta,
 			unsigned int k, unsigned int q_id, char * qfilename)
 {
-    
+
     unsigned int curr_size = 0;
     ts_type bsf = FLT_MAX;
     ts_type kth_bsf = FLT_MAX;
@@ -469,9 +469,10 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
 
 	     //IMPORTANT!!!!
 	     //fix this: increase found_knn and do not print until the end.
+
 	     update_query_stats(index,q_id, found_knn, approximate_result);
 	     get_query_stats(index, found_knn);
-	     print_query_stats(index, q_id, found_knn,qfilename);	     
+	     print_query_stats(index, q_id, found_knn,qfilename);
     }
 
     
@@ -581,20 +582,24 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
     }
     // Free the priority queue.
     pqueue_free(pq);
-    
+
+    fprintf(stderr,"-----------%i-NN RESULTS------------\n",k);
+    for(int i = 0 ; i<k;i++)fprintf(stderr,"------> Node ID %i | DISTANCE %f \n",knn_results[i].node->id , knn_results[i].distance);
+
+
     //report the elements that were not reported already
     for (unsigned int pos = found_knn; pos < k; ++pos)
       {
 	bsf_result = knn_results[pos];
 	found_knn = pos+1;
-        COUNT_PARTIAL_TIME_END
+       COUNT_PARTIAL_TIME_END
         update_query_stats(index,q_id, found_knn, bsf_result);
 	get_query_stats(index, found_knn);
 	print_query_stats(index, q_id, found_knn,qfilename);	
 	//report all results for found_knn - last_found_knn or print their results
 	RESET_QUERY_COUNTERS()
         RESET_PARTIAL_COUNTERS()
-        COUNT_PARTIAL_TIME_START	
+        COUNT_PARTIAL_TIME_START
       }
     
       
