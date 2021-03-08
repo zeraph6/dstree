@@ -232,14 +232,18 @@ enum response dstree_knn_query_binary_file(const char *ifilename,
 
     FILE * ifile;
     COUNT_PARTIAL_RAND_INPUT
-    COUNT_PARTIAL_INPUT_TIME_START    
+    COUNT_PARTIAL_INPUT_TIME_START
+
+    time_t start,end;
+    time(&start);
     ifile = fopen (ifilename,"rb");
     COUNT_PARTIAL_INPUT_TIME_END    
     if (ifile == NULL) {
         fprintf(stderr, "File %s not found!\n", ifilename);
         exit(-1);
     }
-    
+
+
     COUNT_PARTIAL_RAND_INPUT
     COUNT_PARTIAL_RAND_INPUT
     COUNT_PARTIAL_INPUT_TIME_START
@@ -353,6 +357,11 @@ enum response dstree_knn_query_binary_file(const char *ifilename,
 	}
 	free(bsf_snapshots);
     }
+
+    time(&end);
+
+    fprintf(stderr, "Querying time :  %d(Sec)\n", end - start);
+
     return SUCCESS;
 }
 

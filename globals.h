@@ -20,7 +20,7 @@
 #include <math.h>
 //may be included or not
 #include <stdbool.h>
-#include <jemalloc/jemalloc.h>
+
 
 
 ///// TYPES /////

@@ -391,6 +391,7 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
 			ts_type epsilon, ts_type r_delta,
 			unsigned int k, unsigned int q_id, char * qfilename)
 {
+    clock_t start =  clock();
 
     unsigned int curr_size = 0;
     ts_type bsf = FLT_MAX;
@@ -583,8 +584,11 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
     // Free the priority queue.
     pqueue_free(pq);
 
-    fprintf(stderr,"-----------%i-NN RESULTS------------\n",k);
-    for(int i = 0 ; i<k;i++)fprintf(stderr,"------> Node ID %i | DISTANCE %f \n",knn_results[i].node->id , knn_results[i].distance);
+    clock_t end = clock();
+    double time_taken = ((double)(end-start))/CLOCKS_PER_SEC;
+    printf("\n----------%i-NN RESULTS------------\n",k);
+    for(int i = 0 ; i<k;i++)printf("K N %i ==> DISTANCE : %f | Node ID : %i |"
+                                           " TS ID : -1 | Time : %f \n",i , knn_results[i].distance,knn_results[i].node->id, time_taken);
 
 
     //report the elements that were not reported already
@@ -595,13 +599,14 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
        COUNT_PARTIAL_TIME_END
         update_query_stats(index,q_id, found_knn, bsf_result);
 	get_query_stats(index, found_knn);
-	print_query_stats(index, q_id, found_knn,qfilename);	
+	//print_query_stats(index, q_id, found_knn,qfilename);
+
 	//report all results for found_knn - last_found_knn or print their results
 	RESET_QUERY_COUNTERS()
         RESET_PARTIAL_COUNTERS()
         COUNT_PARTIAL_TIME_START
       }
-    
+
       
     //free the results, eventually do something with them!!
 
@@ -1947,6 +1952,8 @@ void get_query_stats(struct dstree_index * index, unsigned int found_knn)
 
 void print_bsf_snapshots(struct dstree_index * index, unsigned int query_num, unsigned int k,
 			 char * queries, struct bsf_snapshot **bsf_snapshots, unsigned int cur_bsf_snapshot)
+			         /*
+
 {
 
   for (unsigned int i = 0; i < k; ++i)
@@ -1969,12 +1976,14 @@ void print_bsf_snapshots(struct dstree_index * index, unsigned int query_num, un
   }
 }
 
+
+*/{}
 void print_pruning_snapshots(struct dstree_node * node,
 			     ts_type node_bsf,
 			     ts_type node_mindist,
 			     unsigned int k,
 			     unsigned int query_num,
-			     char * queries)			     
+			     char * queries){}/*
 {
   
   printf("Query_pruning_snapshot_node_filename\t%s\t%s\t%u\t%u\n",
@@ -2006,10 +2015,11 @@ void print_pruning_snapshots(struct dstree_node * node,
 	 );  
   
 
-}
+}*/
 
 
 void print_query_stats(struct dstree_index * index, unsigned int query_num, unsigned int found_knn, char * queries)
+        /*
 {
 
   if (found_knn == 1)
@@ -2361,7 +2371,7 @@ void print_query_stats(struct dstree_index * index, unsigned int query_num, unsi
 	       found_knn	       
 	       );
 
-}
+}*/{}
 
 void update_query_stats(struct dstree_index * index,
 			unsigned int query_id,
