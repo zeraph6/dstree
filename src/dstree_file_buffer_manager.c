@@ -52,7 +52,7 @@
 
   * @return response 0 or 1
   * **/
-enum response init_file_buffer_manager(struct dstree_index *index)
+ enum response init_file_buffer_manager(struct dstree_index *index)
 {
 
   index->buffer_manager = NULL;

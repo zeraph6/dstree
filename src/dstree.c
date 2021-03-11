@@ -61,6 +61,7 @@ int main (int argc, char **argv)
     boolean track_pruning = 0;
     boolean all_mindists = 0;
     boolean max_policy = 0;
+    boolean  in_memory = 0;
     unsigned char incremental = 0;
     
     //printf("new code\n");
@@ -76,7 +77,8 @@ int main (int argc, char **argv)
 	    {"delta", required_argument, 0, 'e'},
             {"queries-size", required_argument, 0, 'f'},
             {"track-bsf", required_argument, 0, 'g'},
-            {"track-pruning", required_argument, 0, 'i'},	    	    
+            {"track-pruning", required_argument, 0, 'i'},
+            {"in-memory", required_argument, 0, 'im'},
             {"all-mindists", required_argument, 0, 'j'},
             {"max-policy", required_argument, 0, 'm'},
             {"queries", required_argument, 0, 'q'},
@@ -146,6 +148,9 @@ int main (int argc, char **argv)
             case 'i':
   	      track_pruning = atoi(optarg);
 	      break;
+            case 'im':
+                in_memory = atoi(optarg);
+                break;
 
             case 'j':
   	      all_mindists = atoi(optarg);
@@ -263,7 +268,7 @@ int main (int argc, char **argv)
        }
 
         //index : struct of index[total rechords, *dstree_node first, dstree_index_setting, dstree_file_buffer_manager, stats_info]
-       index = dstree_index_init(index_settings);
+       index = dstree_index_init(index_settings, in_memory);
 
        index->first_node = dstree_root_node_init(index->settings);
 
@@ -375,7 +380,7 @@ int main (int argc, char **argv)
             RESET_PARTIAL_COUNTERS()
             COUNT_PARTIAL_TIME_START
 	    is_index_new = 0;
-	    index = dstree_index_read(index_path);
+	    index = dstree_index_read(index_path, in_memory);
   	    if (index == NULL) 
             { 
                fprintf(stderr, "Error main.c:  Could not read the index from disk.\n");
@@ -473,7 +478,7 @@ int main (int argc, char **argv)
          return -1;              
        }
     
-       index = dstree_index_init(index_settings);
+       index = dstree_index_init(index_settings, in_memory);
        index->first_node = dstree_root_node_init(index->settings);
     
        if (index == NULL)
@@ -557,7 +562,7 @@ int main (int argc, char **argv)
     else if (mode == 3)  //read an existing index and execute queries
     {
 	    is_index_new = 0;
-	    index = dstree_index_read(index_path);
+	    index = dstree_index_read(index_path, 0);
   	    if (index == NULL) 
             { 
                fprintf(stderr, "Error main.c:  Could not read the index from disk.\n");

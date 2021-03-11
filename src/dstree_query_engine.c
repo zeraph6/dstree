@@ -587,8 +587,10 @@ void  exact_de_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
     clock_t end = clock();
     double time_taken = ((double)(end-start))/CLOCKS_PER_SEC;
     printf("\n----------%i-NN RESULTS------------\n",k);
-    for(int i = 0 ; i<k;i++)printf("K N %i ==> DISTANCE : %f | Node ID : %i |"
-                                           " TS ID : -1 | Time : %f \n",i , knn_results[i].distance,knn_results[i].node->id, time_taken);
+    for(int i = 0 ; i<k;i++){
+        time_taken=(i==0)?time_taken:0;
+        printf("K N %i ==> DISTANCE : %f | Node ID : %i |"
+               " TS ID : -1 | Time : %f \n",i , sqrt(knn_results[i].distance),knn_results[i].node->id, time_taken);}
 
 
     //report the elements that were not reported already

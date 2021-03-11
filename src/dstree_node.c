@@ -558,17 +558,18 @@ void calculate_node_knn_distance (struct dstree_index *index, struct dstree_node
 
     }
 
-    //clearing the data for this node
-     for (int i = 0 ; i < index->settings->max_leaf_size; ++i)
-     {
-       free(node->file_buffer->buffered_list[i]);
-     }
+    if(!index->in_memory) {
 
-     free(node->file_buffer->buffered_list);
+        //clearing the data for this node
+        for (int i = 0; i < index->settings->max_leaf_size; ++i) {
+            free(node->file_buffer->buffered_list[i]);
+        }
 
-     node->file_buffer->buffered_list = NULL;
-     node->file_buffer->buffered_list_size = 0;
-    
+        free(node->file_buffer->buffered_list);
+
+        node->file_buffer->buffered_list = NULL;
+        node->file_buffer->buffered_list_size = 0;
+    }
 }
 
 

@@ -101,7 +101,7 @@ struct dstree_index_settings * dstree_index_settings_init(const char * root_dire
  @param dstree_index_settings *settings
  @return dstree_index
  */
-struct dstree_index * dstree_index_init(struct dstree_index_settings *settings)
+struct dstree_index * dstree_index_init(struct dstree_index_settings *settings, boolean allocate)
 {
     struct dstree_index *index = malloc(sizeof(struct dstree_index));
     if(index == NULL) {
@@ -112,10 +112,11 @@ struct dstree_index * dstree_index_init(struct dstree_index_settings *settings)
     
     index->settings = settings;
     index->total_records = 0;
+    index->in_memory = allocate;
 
     dstree_init_stats(index);
     
-    if (!init_file_buffer_manager(index))
+    if(allocate)if (!init_file_buffer_manager(index))
     { 
       fprintf(stderr, "Error in dstree_index.c:  Could not initialize the \
                        file buffer manager for this index.\n");
@@ -1593,7 +1594,7 @@ enum response dstree_index_write(struct dstree_index *index)
  </ul>
  */
 
-struct dstree_index * dstree_index_read(const char* root_directory)
+struct dstree_index *dstree_index_read(const char *root_directory, boolean is_in_memory)
 {
         if(chdir(root_directory) != 0)
         {
@@ -1649,13 +1650,14 @@ struct dstree_index * dstree_index_read(const char* root_directory)
                                                           max_leaf_size, 
 							  buffered_memory_size,
 							  is_index_new);
-    
-        struct dstree_index * index = dstree_index_init(index_settings);
+
+
+    struct dstree_index * index = dstree_index_init(index_settings, is_in_memory);
 
 	index->stats->leaves_heights = calloc(count_leaves, sizeof(int));
 	index->stats->leaves_sizes = calloc(count_leaves, sizeof(int));
 	index->stats->leaves_counter = 0;
-	
+
 	index->first_node = dstree_node_read(index, file);
         COUNT_PARTIAL_INPUT_TIME_START	
 	fclose(file);
@@ -1826,6 +1828,7 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 
 		node->file_buffer->disk_count = node->node_size;
 
+
 		if(filename_size > 0)
 		{
 			node->filename = malloc(sizeof(char) * (filename_size + 1));
@@ -1883,7 +1886,30 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 			index->stats->leaves_sizes[index->stats->leaves_counter] = node->node_size;
 			++(index->stats->leaves_counter);
 			  
-			dstree_update_index_stats(index, node);			  
+			dstree_update_index_stats(index, node);
+
+            if(index->in_memory){
+                if (node->file_buffer->buffered_list_size == 0)
+                {
+                    COUNT_LOADED_NODE
+                    COUNT_LOADED_TS(node->node_size)
+                    COUNT_PARTIAL_LOAD_NODE_TIME_START
+
+                    node->file_buffer->buffered_list = get_all_time_series_in_node(index, node);
+                    node->file_buffer->buffered_list_size = node->file_buffer->disk_count;
+
+
+                    if (node->file_buffer->buffered_list == NULL)
+                    {
+                        fprintf(stderr, "Error in dstree_index.c:  Could not retrieve all time series for node %s.\n", node->filename);
+                    }
+                    COUNT_PARTIAL_LOAD_NODE_TIME_END
+                }
+            }
+
+
+
+
                  }
 		else
 		{
@@ -1895,6 +1921,7 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 		//get_all_time_series_in_node(index,node);
 		//node->file_buffer->disk_count = 0;
 	}
+
 	else {
                 node->split_policy = NULL;
 		node->split_policy = malloc(sizeof(struct node_split_policy));
@@ -1943,6 +1970,7 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 		node->filename = NULL;
 		//node->node_size = 0;
 	}
+
 	node->id = n++;
 	if(!is_leaf) {
 		node->left_child = dstree_node_read(index, file);

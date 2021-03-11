@@ -325,10 +325,11 @@ struct  dstree_index{
     struct dstree_index_settings *settings;
     struct dstree_file_buffer_manager * buffer_manager;
     struct stats_info * stats;
+    boolean in_memory;
 };
 
-struct dstree_index * dstree_index_init(struct dstree_index_settings *settings);
-struct dstree_index * dstree_index_read(const char* root_directory); 
+struct dstree_index * dstree_index_init(struct dstree_index_settings *settings, boolean in_memory);
+struct dstree_index *dstree_index_read(const char *root_directory, boolean i);
 enum response dstree_index_write(struct dstree_index *index);
 struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file);
 enum response dstree_node_write(struct dstree_index *index, struct dstree_node *node, FILE *file);
