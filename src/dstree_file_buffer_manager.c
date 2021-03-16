@@ -73,7 +73,7 @@
   index->buffer_manager->file_map_tail = NULL; //the file map is empty initially
   
   index->buffer_manager->file_map_size = 0;  
-
+  printf(" buffer manager filemap %i",index->buffer_manager->file_map_size);
   set_buffered_memory_size(index);
 
   return SUCCESS;
@@ -197,7 +197,8 @@ enum response get_file_buffer(struct dstree_index *index, struct dstree_node *no
 enum response add_file_buffer_to_map(struct dstree_index * index, struct dstree_node *node)
 {
   //    fprintf(stderr,"Adding file_buffer of node %s to map.\n", node->file_buffer->node->filename);
-    int idx = index->buffer_manager->file_map_size;
+
+  int idx = index->buffer_manager->file_map_size;
         
     if (idx == 0)
     {

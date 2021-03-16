@@ -116,7 +116,7 @@ struct dstree_index * dstree_index_init(struct dstree_index_settings *settings, 
 
     dstree_init_stats(index);
     
-    if(allocate)if (!init_file_buffer_manager(index))
+    if(!allocate)if(!init_file_buffer_manager(index))
     { 
       fprintf(stderr, "Error in dstree_index.c:  Could not initialize the \
                        file buffer manager for this index.\n");
@@ -1976,7 +1976,6 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 		node->left_child = dstree_node_read(index, file);
 		node->right_child = dstree_node_read(index, file);
 	}
-    fprintf(stderr,"-------------------->Load Node ID %i \n",node->id);
 	return node;
 }
 
