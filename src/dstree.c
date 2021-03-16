@@ -401,7 +401,7 @@ int main (int argc, char **argv)
 
 
             dstree_get_index_stats (index);
-            dstree_print_index_stats(index,dataset);
+            //dstree_print_index_stats(index,dataset);
 	    //COUNT_TOTAL_TIME_START
 	      
 	    fprintf(stderr, ">>> Index loaded successfully from: %s\n", index_path);

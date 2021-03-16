@@ -1976,7 +1976,7 @@ struct dstree_node * dstree_node_read(struct dstree_index *index, FILE *file) {
 		node->left_child = dstree_node_read(index, file);
 		node->right_child = dstree_node_read(index, file);
 	}
-    fprintf(stderr,"-------------------->Load Node ID %i \n",node->id);
+    //fprintf(stderr,"-------------------->Load Node ID %i \n",node->id);
 	return node;
 }
 
