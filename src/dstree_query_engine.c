@@ -621,7 +621,7 @@ void  exact_ng_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
 			struct dstree_index *index,ts_type minimum_distance,
 			unsigned int k, unsigned int q_id, char * qfilename, unsigned int nprobes)
 {
-    
+    clock_t start =  clock();
     unsigned int curr_size = 0;
     ts_type bsf = FLT_MAX;
     ts_type kth_bsf = FLT_MAX;
@@ -811,7 +811,14 @@ void  exact_ng_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
     }
     // Free the priority queue.
     pqueue_free(pq);
-    
+
+    clock_t end = clock();
+    double time_taken = ((double)(end-start))/CLOCKS_PER_SEC;
+    printf("\n----------%i-NN RESULTS------------\n",k);
+    for(int i = 0 ; i<k;i++){
+        time_taken=(i==0)?time_taken:0;
+        printf("K N %i ==> DISTANCE : %f | Node ID : %i |"
+               " TS ID : -1 | Time : %f \n",i , sqrt(knn_results[i].distance),knn_results[i].node->id, time_taken);}
     //report the elements that were not reported already
     for (unsigned int pos = found_knn; pos < k; ++pos)
       {
