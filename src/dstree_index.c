@@ -122,7 +122,6 @@ struct dstree_index * dstree_index_init(struct dstree_index_settings *settings, 
                        file buffer manager for this index.\n");
       return NULL;              
     }
-	
     return index;
 }
 
