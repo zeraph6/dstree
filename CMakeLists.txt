@@ -9,4 +9,4 @@ add_library(libdstree STATIC "${LIBDSTREE}")
 
 add_executable(dstree src/dstree.c )
 
-target_link_libraries(dstree libdstree m  readline)
+target_link_libraries(dstree libdstree m readline jemalloc)
