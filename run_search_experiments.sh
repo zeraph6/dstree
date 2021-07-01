@@ -16,17 +16,15 @@ SIZE=10000000
 LS=10000
 NQ=100
 K=100
-BS=0
+BS=15000
 LEN=256
-LS=0
+LS=100000
 FLATT=0
 IS_CACHE=0
 
-mkdir -p ./Logs/${VERSION}
+mkdir -p ./Logs/
 
-for EF in 100 200 400 600 800 1000
-do
+
 sudo sync;
 sudo sh -c "echo 3 >> /proc/sys/vm/drop_caches";
-./cmake-build-release/hnsw --queries ${CURR_QUERIES} --queries-size ${NQ} --index-path $PWD/index/ --k ${K} --ef ${EF} --mode 1 --flatt ${FLATT} &> ./Logs/${VERSION}/HNSW_${DATASET}_${SIZE}_${BS}_${LEN}_${SIZE}_${M}_${EFC}_${QUERIES}_${NQ}_${K}_${EF}_${FLATT}_${IS_CACHE}_search.log;
-done 
+./cmake-build-release/dstree --queries ${CURR_QUERIES} --queries-size ${NQ} --index-path $PWD/indexrand10gb/ --k ${K} --ascii-input 0 --ef ${EF} --mode 1 --in-memory 1 &> $PWD/Logs/DSTREE_${DATASET}_${SIZE}_${BS}_${LEN}_${SIZE}_${LS}_${QUERIES}_${NQ}_${K}_${0}_${0}_${IS_CACHE}_search.log;

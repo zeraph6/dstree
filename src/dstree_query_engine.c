@@ -37,12 +37,9 @@ struct query_result approximate_search (ts_type *query_ts, ts_type * query_ts_re
     if (node != NULL) {
         // Traverse tree
         while (!node->is_leaf) {
-	  if(node_split_policy_route_to_left(node,query_ts)) 
-            {
+            if (node_split_policy_route_to_left(node, query_ts)) {
                 node = node->left_child;
-            }
-            else
-            {
+            } else {
                 node = node->right_child;
             }
         }
@@ -627,40 +624,40 @@ void  exact_ng_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
     ts_type kth_bsf = FLT_MAX;
     ts_type temp_bsf = FLT_MAX;
     unsigned int cur_probes = 0;
-    
+    unsigned long nb_dc = 0;
+
     //the next NN found by incremental search
     unsigned int found_knn = 0;
-    
+
     //queue containing kNN results
-    struct query_result * knn_results = calloc(k,sizeof(struct query_result));
-    for (int idx = 0; idx < k; ++idx)
-    {
-      knn_results[idx].node = NULL;
-      knn_results[idx].distance = FLT_MAX;      
+    struct query_result *knn_results = calloc(k, sizeof(struct query_result));
+    for (int idx = 0; idx < k; ++idx) {
+        knn_results[idx].node = NULL;
+        knn_results[idx].distance = FLT_MAX;
     }
 
     //return k approximate results
     approximate_knn_search(query_ts, query_ts_reordered, query_order, offset, bsf,
-			   index,knn_results,k, NULL, NULL,&curr_size);
-    
+                           index, knn_results, k, NULL, NULL, &curr_size);
+    nb_dc += knn_results[0].node->node_size;
     ++cur_probes;
-    
+
     //set the approximate result to be the first item in the queue
-    struct query_result approximate_result = knn_results[0];    
+    struct query_result approximate_result = knn_results[0];
     //struct query_result bsf_result = approximate_result;    
 
-    COUNT_PARTIAL_TIME_END                 
-    index->stats->query_filter_total_time  = partial_time;	
-    
-    index->stats->query_filter_input_time  = partial_input_time;
+    COUNT_PARTIAL_TIME_END
+    index->stats->query_filter_total_time = partial_time;
+
+    index->stats->query_filter_input_time = partial_input_time;
     index->stats->query_filter_output_time = partial_output_time;
     index->stats->query_filter_load_node_time = partial_load_node_time;
-    index->stats->query_filter_cpu_time    = partial_time-partial_input_time-partial_output_time;
-    index->stats->query_filter_seq_input_count   = partial_seq_input_count;
-    index->stats->query_filter_seq_output_count  = partial_seq_output_count;
-    index->stats->query_filter_rand_input_count  = partial_rand_input_count;
+    index->stats->query_filter_cpu_time = partial_time - partial_input_time - partial_output_time;
+    index->stats->query_filter_seq_input_count = partial_seq_input_count;
+    index->stats->query_filter_seq_output_count = partial_seq_output_count;
+    index->stats->query_filter_rand_input_count = partial_rand_input_count;
     index->stats->query_filter_rand_output_count = partial_rand_output_count;
-    
+
     index->stats->query_filter_loaded_nodes_count = loaded_nodes_count;
     index->stats->query_filter_loaded_ts_count = loaded_ts_count;
     index->stats->query_filter_checked_nodes_count = checked_nodes_count;
@@ -756,36 +753,36 @@ void  exact_ng_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
 
       //the first element of the queue is not used, thus pos-1
 
-      if (n->node->is_leaf) // n is a leaf
+        if (n->node->is_leaf) // n is a leaf
         {
-	  //upon return, the queue will update the next best (k-foundkNN)th objects
- 	  calculate_node_knn_distance(index, n->node, query_ts_reordered,
-				      query_order, offset, bsf_result.distance,
-				      k,knn_results,NULL, NULL,&curr_size);
-          
-	  //increase the number of visited leaves
-	  ++cur_probes;
-	  
+            //upon return, the queue will update the next best (k-foundkNN)th objects
+            calculate_node_knn_distance(index, n->node, query_ts_reordered,
+                                        query_order, offset, bsf_result.distance,
+                                        k, knn_results, NULL, NULL, &curr_size);
+            nb_dc += n->node->node_size;
+            //increase the number of visited leaves
+            ++cur_probes;
+
         }
-      // If it is an intermediate node calculate mindist for children
-      // and push them in the queue
-      else  //n is an internal node
+            // If it is an intermediate node calculate mindist for children
+            // and push them in the queue
+        else  //n is an internal node
         {
-          temp = knn_results[k-1];
-          kth_bsf =  temp.distance;
-	  
-          ts_type child_distance;
-	  child_distance = calculate_node_min_distance(index, n->node->left_child,query_ts);
-	  
-	  //mindist_result_left->node->parent = n->node;
-	  //if (child_distance < bsf_result.distance/(1 + epsilon) )
-	  if ((child_distance < kth_bsf) &&
-	      (n->node->left_child != approximate_result.node)) //add epsilon
-	  {
-	      struct query_result * mindist_result_left = malloc(sizeof(struct query_result));
-	      mindist_result_left->node = n->node->left_child;
-	      mindist_result_left->distance =  child_distance;
-	      pqueue_insert(pq, mindist_result_left);
+            temp = knn_results[k - 1];
+            kth_bsf = temp.distance;
+
+            ts_type child_distance;
+            child_distance = calculate_node_min_distance(index, n->node->left_child, query_ts);
+
+            //mindist_result_left->node->parent = n->node;
+            //if (child_distance < bsf_result.distance/(1 + epsilon) )
+            if ((child_distance < kth_bsf) &&
+                (n->node->left_child != approximate_result.node)) //add epsilon
+            {
+                struct query_result *mindist_result_left = malloc(sizeof(struct query_result));
+                mindist_result_left->node = n->node->left_child;
+                mindist_result_left->distance = child_distance;
+                pqueue_insert(pq, mindist_result_left);
 	    }
 
 	  child_distance = calculate_node_min_distance(index, n->node->right_child,query_ts);
@@ -795,44 +792,45 @@ void  exact_ng_knn_search (ts_type *query_ts, ts_type * query_ts_reordered,
 	      (n->node->right_child != approximate_result.node)) //add epsilon	  
 	    {
 	      struct query_result * mindist_result_right = malloc(sizeof(struct query_result));
-	      mindist_result_right->node = n->node->right_child;
-	      mindist_result_right->distance =  child_distance;
-	      pqueue_insert(pq, mindist_result_right);
-	    }
+            mindist_result_right->node = n->node->right_child;
+            mindist_result_right->distance = child_distance;
+            pqueue_insert(pq, mindist_result_right);
         }
-      // Free the node currently popped.
-      //if(n != do_not_remove)
-	free(n);
+        }
+        // Free the node currently popped.
+        //if(n != do_not_remove)
+        free(n);
     }
     // Free the nodes that were not popped.
-    while ((n = pqueue_pop(pq)))
-      {
-	  free(n);
+    while ((n = pqueue_pop(pq))) {
+        free(n);
     }
     // Free the priority queue.
     pqueue_free(pq);
 
     clock_t end = clock();
-    double time_taken = ((double)(end-start))/CLOCKS_PER_SEC;
-    printf("\n----------%i-NN RESULTS------------\n",k);
-    for(int i = 0 ; i<k;i++){
-        time_taken=(i==0)?time_taken:0;
+    double time_taken = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\n----------%i-NN RESULTS------------\n", k);
+    for (int i = 0; i < k; i++) {
+        time_taken = (i == 0) ? time_taken : 0;
         printf("K N %i ==> DISTANCE : %f | Node ID : %i |"
-               " TS ID : -1 | Time : %f \n",i , sqrt(knn_results[i].distance),knn_results[i].node->id, time_taken);}
+               " TS ID : -1 | Time : %f | DC : %lu \n", i,
+               sqrt(knn_results[i].distance), knn_results[i].node->id, time_taken, nb_dc);
+
+    }
     //report the elements that were not reported already
-    for (unsigned int pos = found_knn; pos < k; ++pos)
-      {
-	bsf_result = knn_results[pos];
-	found_knn = pos+1;
+    for (unsigned int pos = found_knn; pos < k; ++pos) {
+        bsf_result = knn_results[pos];
+        found_knn = pos + 1;
         COUNT_PARTIAL_TIME_END
-        update_query_stats(index,q_id, found_knn, bsf_result);
-	get_query_stats(index, found_knn);
-	print_query_stats(index, q_id, found_knn,qfilename);	
-	//report all results for found_knn - last_found_knn or print their results
-	RESET_QUERY_COUNTERS()
+        update_query_stats(index, q_id, found_knn, bsf_result);
+        get_query_stats(index, found_knn);
+        print_query_stats(index, q_id, found_knn, qfilename);
+        //report all results for found_knn - last_found_knn or print their results
+        RESET_QUERY_COUNTERS()
         RESET_PARTIAL_COUNTERS()
-        COUNT_PARTIAL_TIME_START	
-      }
+        COUNT_PARTIAL_TIME_START
+    }
     
       
     //free the results, eventually do something with them!!
