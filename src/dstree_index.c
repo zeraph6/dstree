@@ -116,7 +116,7 @@ struct dstree_index * dstree_index_init(struct dstree_index_settings *settings, 
 
     dstree_init_stats(index);
     
-    if(allocate)if (!init_file_buffer_manager(index))
+    if (!init_file_buffer_manager(index))
     { 
       fprintf(stderr, "Error in dstree_index.c:  Could not initialize the \
                        file buffer manager for this index.\n");
