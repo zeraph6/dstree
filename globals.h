@@ -51,56 +51,56 @@ typedef bool boolean;
 #define BUFFER_REALLOCATION_RATE  2 
 
 ///// GLOBAL VARIABLES /////
-int FLUSHES;
+extern int FLUSHES;
 
 ///// BNECHMARKING /////
 //#ifdef BENCHMARK
 		#include <time.h>
 		#include <sys/time.h>
- 
-        double tS;
-        double tE;
 
-        struct timeval total_time_start;
-        struct timeval parse_time_start;
-        struct timeval input_time_start;
-        struct timeval output_time_start;
-        struct timeval load_node_start;
-        struct timeval current_time;
-        struct timeval fetch_start;
-        struct timeval fetch_check_start;
-        double total_input_time;
-        double total_output_time;
-        double total_parse_time;
-        double load_node_time;
-        double total_time;
+        extern double tS;
+        extern double tE;
+
+        extern struct timeval total_time_start;
+        extern struct timeval parse_time_start;
+        extern struct timeval input_time_start;
+        extern struct timeval output_time_start;
+        extern struct timeval load_node_start;
+        extern struct timeval current_time;
+        extern struct timeval fetch_start;
+        extern struct timeval fetch_check_start;
+        extern double total_input_time;
+        extern double total_output_time;
+        extern double total_parse_time;
+        extern double load_node_time;
+        extern double total_time;
 
 
-        struct timeval partial_time_start;
-        struct timeval partial_input_time_start;
-        struct timeval partial_output_time_start;
-        struct timeval partial_load_node_time_start;         
+        extern struct timeval partial_time_start;
+        extern struct timeval partial_input_time_start;
+        extern struct timeval partial_output_time_start;
+        extern struct timeval partial_load_node_time_start;
 
-        double partial_time;
-        double partial_input_time;
-        double partial_output_time;
-        double partial_load_node_time;
+        extern double partial_time;
+        extern double partial_input_time;
+        extern double partial_output_time;
+        extern double partial_load_node_time;
 
-        unsigned long long partial_seq_input_count;
-        unsigned long long partial_seq_output_count;
-        unsigned long long partial_rand_input_count;
-        unsigned long long partial_rand_output_count;
+        extern unsigned long long partial_seq_input_count;
+        extern unsigned long long partial_seq_output_count;
+        extern unsigned long long partial_rand_input_count;
+        extern unsigned long long partial_rand_output_count;
 
-        unsigned long total_nodes_count;
-        unsigned long leaf_nodes_count;
-        unsigned long empty_leaf_nodes_count;
-        unsigned long loaded_nodes_count;
-        unsigned long checked_nodes_count;
-        unsigned long loaded_ts_count;
-        unsigned long checked_ts_count;
-        unsigned long total_ts_count;
-        unsigned long total_queries_count;
-        ts_type total_tlb;
+        extern unsigned long total_nodes_count;
+        extern unsigned long leaf_nodes_count;
+        extern unsigned long empty_leaf_nodes_count;
+        extern unsigned long loaded_nodes_count;
+        extern unsigned long checked_nodes_count;
+        extern unsigned long loaded_ts_count;
+        extern unsigned long checked_ts_count;
+        extern unsigned long total_ts_count;
+        extern unsigned long total_queries_count;
+        extern ts_type total_tlb;
 
         #define INIT_STATS() total_input_time = 0;\
                              total_output_time = 0;\
